@@ -1,10 +1,4 @@
 ## 
-## Summary of task: Based on the documentation for the lab, there exists two sets of information
-## stored by "test" and "train".  The following code goes by aggregating all test-related observations,
-## and then train-related observations.  Later, it merges the test and train observations joining them on
-## activity and subject.  Even though the subject identifiers are not common between Tests/Train, it's important
-## to join them on 'subject' variable because we have to aggregate the observations by 'subject'. This also 
-## means that we will have an alternate pattern of NA (for Test/Train) when we group by subject.
 ## 
 ## 
 ##
@@ -13,6 +7,8 @@
 
 
 run_analysis <- function(){
+  library(dplyr)
+  library(matrixStats)
   
   ##Read activity labels
   activityLbl <- read.table("activity_labels.txt")
@@ -150,13 +146,13 @@ run_analysis <- function(){
   mergedDsByAct <- aggregate(mergedDsByAct, by = list(mergedDsByAct$ActivityName), FUN=mean, na.rm=T)
   mergedDsByAct$ActivityName <- NULL
   colnames(mergedDsByAct)[1] <- "ActivityName"
-  write.table(mergedDsByAct, file="SamsungDataByActivity.csv", row.name=F)
+  write.table(mergedDsByAct, file="SamsungDataByActivity.txt", row.name=F)
   
   ##subset the dataset by Subject
   mergedDsBySbj <- subset (mergeData1, select = -c(ActivityName))
   mergedDsBySbj <- aggregate(mergedDsBySbj[, 3:ncol(mergedDsBySbj)], list(mergedDsBySbj$Subject), mean,na.rm=TRUE)
   colnames(mergedDsBySbj)[1] <- "Subject"
-  write.table(mergedDsBySbj, file="SamsungDataBySubject.csv", row.name=F)
+  write.table(mergedDsBySbj, file="SamsungDataBySubject.txt", row.name=F)
   
   
 }
